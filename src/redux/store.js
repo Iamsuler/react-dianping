@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import rootReducer from './modules'
+import apiMiddleware from './middlewares/api'
 
 let store
 
@@ -13,7 +14,8 @@ if (
     rootReducer,
     composeEnhancer(
       applyMiddleware(
-        thunkMiddleware
+        thunkMiddleware,
+        apiMiddleware
       )
     )
   )
@@ -21,7 +23,8 @@ if (
   store = createStore(
     rootReducer,
     applyMiddleware(
-      thunkMiddleware
+      thunkMiddleware,
+      apiMiddleware
     )
   )
 }

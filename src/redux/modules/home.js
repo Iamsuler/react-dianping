@@ -1,5 +1,6 @@
-import { get } from '../../utils/request'
 import { getProdustcList } from '../../utils/url'
+import { FETCH_DATA } from '../middlewares/api'
+import { schema } from './entities/products'
 
 const types = {
   FETCH_LIKES_PRODUCTS: 'HOME/FETCH_LIKES_PRODUCTS',
@@ -7,25 +8,19 @@ const types = {
   FETCH_LIKES_PRODUCTS_FAILED: 'HOME/FETCH_LIKES_PRODUCTS_FAILED'
 }
 
-// action
-const fetchLikesRequest = () => ({ type: types.FETCH_LIKES_PRODUCTS })
-const fetchLikesSuccess = (data) => ({ type: types.FETCH_LIKES_PRODUCTS_SUCCESS, data })
-const fetchLikesFailed = (error) => ({ type: types.FETCH_LIKES_PRODUCTS_FAILED, error })
+const fetchLikes = (endpoint) => ({
+  [FETCH_DATA]: {
+    schema,
+    endpoint,
+    types: Object.values(types)
+  } 
+})
 
 export const actions = {
   fetchLikes: () => {
     return (dispatch) => {
-      dispatch(fetchLikesRequest())
-
-      get(getProdustcList(1, 10))
-        .then(
-          response => {
-            dispatch(fetchLikesSuccess(response))
-          },
-          error => {
-            dispatch(fetchLikesFailed(error))
-          }
-        )
+      const endpoint = getProdustcList(1, 10)
+      return dispatch(fetchLikes(endpoint))
     }
   }
 }
