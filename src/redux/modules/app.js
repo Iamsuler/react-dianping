@@ -1,5 +1,5 @@
 const initState = {
-  error: false
+  error: null
 }
 
 export const types = {

@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'
 import './style.css'
 
 class ErrorToast extends Component {
+  static propTypes = {
+    message: PropTypes.string.isRequired,
+    clearError: PropTypes.func.isRequired
+  }
+
   render() {
     const { message } = this.props
     return (
