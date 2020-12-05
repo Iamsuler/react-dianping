@@ -4,6 +4,7 @@ import ErrorToast from '../../components/ErrorToast'
 import { getError, actions as appActions } from '../../redux/modules/app'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Home from '../Home'
 class App extends Component {
   render() {
@@ -13,7 +14,11 @@ class App extends Component {
         {
           error ? <ErrorToast message={ error } clearError={ clearError } /> : null
         }
-        <Home />
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" component={ Home }></Route>
+          </Switch>
+        </BrowserRouter>
       </div>
     );
   }
