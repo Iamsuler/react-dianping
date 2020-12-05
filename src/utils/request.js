@@ -23,9 +23,9 @@ export function get (url) {
     method: 'GET',
     headers
   }).then(response => {
-    handleResponse(response, url)
+    return handleResponse(response, url)
   }).catch(error => {
-    handleError()
+    return handleError()
   })
 }
 
@@ -35,8 +35,8 @@ export function post (url, data) {
     body: data,
     headers
   }).then(response => {
-    handleResponse(response, url)
+    return handleResponse(response, url)
   }).catch(error => {
-    handleError()
+    return handleError()
   })
 }
