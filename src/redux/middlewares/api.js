@@ -73,7 +73,7 @@ const middleware = store => next => action => {
     })),
     error => next(actionWith({
       type: failedType,
-      error
+      error: error.message || '未知错误'
     }))
   )
 }
