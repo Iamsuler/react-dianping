@@ -25,9 +25,9 @@ const mapDispatchToProps = dispatch => ({
   appActions: bindActionCreators(appActions, dispatch)
 })
 
-const AppContainer = connect({
+const AppContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-})(App)
+)(App)
 
 export default AppContainer;
