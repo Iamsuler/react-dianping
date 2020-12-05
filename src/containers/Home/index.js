@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Category from './components/Category'
 import Headline from './components/Headline'
+import Discount from './components/Discount'
 
 class Home extends Component {
   render() {
@@ -8,6 +9,7 @@ class Home extends Component {
       <div>
         <Category />
         <Headline />
+        <Discount />
       </div>
     );
   }
