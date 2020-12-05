@@ -17,11 +17,9 @@ const fetchLikes = (endpoint) => ({
 })
 
 export const actions = {
-  fetchLikes: () => {
-    return (dispatch) => {
-      const endpoint = getProdustcList(1, 10)
-      return dispatch(fetchLikes(endpoint))
-    }
+  fetchLikes: dispatch => {
+    const endpoint = getProdustcList(1, 10)
+    dispatch(fetchLikes(endpoint))
   }
 }
 
