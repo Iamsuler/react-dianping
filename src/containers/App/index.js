@@ -7,6 +7,8 @@ import { bindActionCreators } from 'redux';
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Home from '../Home'
 import Footer from '@/components/Footer'
+import User from '../User'
+import ProductDetail from '../ProductDetail'
 class App extends Component {
   render() {
     const { error, appActions: { clearError } } = this.props
@@ -17,6 +19,8 @@ class App extends Component {
         }
         <BrowserRouter>
           <Switch>
+            <Route path="/detail/:id" component={ ProductDetail }></Route>
+            <Route path="/user" component={ User }></Route>
             <Route path="/" component={ Home }></Route>
           </Switch>
         </BrowserRouter>
