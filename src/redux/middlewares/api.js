@@ -27,8 +27,13 @@ function normalizeData (data, schema) {
 }
 
 function fetchData (url, schema) {
-  return get(url).then(data => {
-    return normalizeData(data, schema)
+  return get(url).then(response => {
+    const { data, success } = response
+    if (success) {
+      return normalizeData(data.list, schema)
+    } else {
+      return response
+    }
   })
 }
 
