@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
+import { bindActionCreators } from 'redux'
 
-import { get } from '@/utils/request'
-import { getProduct, getShop } from '@/utils/url'
+import { getProduct, getShop, actions as detailActions } from '../../redux/modules/detail'
 
 import Header from '@/components/Header'
 import ProductOverview from './components/Overview'
@@ -11,66 +11,41 @@ import Remark from './components/Remark'
 import BuyButton from './components/BuyButton'
 
 import './style.css'
+import { connect } from 'react-redux'
 
 class ProductDetail extends Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      id: '',
-      productDetail: {
-        detail: {},
-        currentPrice: '',
-        oldPrice: ''
-      },
-      shopInfo: {},
-      totalShop: 0
-    }
-  }
-
-  getProduct = async (id) => {
-    get(getProduct(id)).then(response => {
-      const { success, data } = response
-      if (success) {
-        const { shopIds } = data
-        this.getShop(shopIds[0])
-        this.setState({
-          productDetail: data,
-          totalShop: shopIds.length
-        })
-      }
-    })
-  }
-
-  getShop = async (id) => {
-    get(getShop(id)).then(({ success, data }) => {
-      if (success) {
-        this.setState({
-          shopInfo: data
-        })
-      }
-    })
-  }
-
   handleBack = () => {
-    // TODO
+    this.props.history.goBack()
   }
 
   componentDidMount () {
     const { id } = this.props.match.params
-    this.getProduct(id)
-    this.setState({ id })
+    const { product } = this.props
+
+    if (!product) {
+      this.props.detailActions.fetchProductDetail(id)
+    } else if (!this.props.relatedShop) {
+      this.props.detailActions.fetchRelatedShop(product.nearestShop)
+    }
+  }
+
+  componentDidUpdate (preProps) {
+    // 第一次获取商品详情，需要继续获取关联商铺信息
+    const product = this.props.product
+    if (!preProps.product && product) {
+      this.props.detailActions.fetchRelatedShop(product.nearestShop)
+    }
   }
 
   render() {
-    const { productDetail, totalShop, shopInfo, id } = this.state
-    const { detail, oldPrice, currentPrice } = productDetail
+    const { product, relatedShop } = this.props
+    const { id } = this.props.match.params
     return (
       <div className="productDetail">
         <Header title="团购详情" grey onBack={ this.handleBack } />
-        <ProductOverview data={ productDetail } />
-        <ShopInfo data={ shopInfo } total={ totalShop } />
-        <Detail data={ { ...detail, oldPrice, currentPrice } } />
+        { product && <ProductOverview data={ product } /> }
+        { relatedShop && <ShopInfo data={ relatedShop } total={ product.shopIds.length } /> }
+        { product && <Detail data={ product } /> }
         <Remark />
         <BuyButton id={ id } />
       </div>
@@ -78,4 +53,24 @@ class ProductDetail extends Component {
   }
 }
 
-export default ProductDetail
+const mapStateToProps = (state, props) => {
+  const productId = props.match.params.id
+
+  return {
+    product: getProduct(state, productId),
+    relatedShop: getShop(state, productId) 
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    detailActions: bindActionCreators(detailActions, dispatch)
+  }
+}
+
+const ProductionDetailContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProductDetail)
+
+export default ProductionDetailContainer

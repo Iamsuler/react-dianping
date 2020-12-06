@@ -5,11 +5,13 @@ import './style.css'
 class Detail extends Component {
   render() {
     const {
-      category,
-      products,
-      oldPrice,
       currentPrice,
-      remark
+      oldPrice,
+      detail: {
+        category,
+        products,
+        remark
+      }
     } = this.props.data
     return (
       <div className="detail">
