@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Home from '../Home'
+import Footer from '@/components/Footer'
 class App extends Component {
   render() {
     const { error, appActions: { clearError } } = this.props
@@ -19,6 +20,7 @@ class App extends Component {
             <Route path="/" component={ Home }></Route>
           </Switch>
         </BrowserRouter>
+        <Footer />
       </div>
     );
   }
