@@ -22,7 +22,7 @@ class LikeList extends Component {
 
   getLikeList = async () => {
     const { page } = this.state
-    get(getProdustcList(page, 10)).then(response => {
+    get(getProdustcList('likes', page, 10)).then(response => {
       const { success, data } = response
       if (success) {
         const newList = this.state.likeList.concat(data.list)

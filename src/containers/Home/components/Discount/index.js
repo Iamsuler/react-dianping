@@ -14,7 +14,7 @@ class Discount extends Component {
   }
 
   componentDidMount () {
-    get(getDiscountList(1, 10)).then(response => {
+    get(getDiscountList('discounts', 0, 3)).then(response => {
       const { data, success } = response
       if (success) {
         this.setState({
