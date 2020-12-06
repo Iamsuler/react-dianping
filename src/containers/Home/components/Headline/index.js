@@ -9,7 +9,8 @@ class Headline extends Component {
       slidesToShow: 1,
       swipeToSlide: true,
       autoplay: true,
-      vertical: true
+      vertical: true,
+      arrows: false
     }
 
     return (
