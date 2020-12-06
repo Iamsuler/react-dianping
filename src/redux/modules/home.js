@@ -66,7 +66,13 @@ export const actions = {
     }
   },
   fetchDiscounts: () => {
-    return dispatch => {
+    return (dispatch, getState) => {
+      const { ids } = getState().home.discounts
+
+      // 缓存特惠信息
+      if (ids.length) {
+        return null
+      }
       const endpoint = getProdustcList(params.PATH_DISCOUNTS, 0, params.PAGE_SIZE_DISCOUNTS)
       dispatch(fetchDiscounts(endpoint))
     }
