@@ -1,31 +1,10 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { get } from '@/utils/request'
-import { getDiscountList } from '@/utils/url'
 import './style.css'
-
 class Discount extends Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      discountList: []
-    }
-  }
-
-  componentDidMount () {
-    get(getDiscountList('discounts', 0, 3)).then(response => {
-      const { data, success } = response
-      if (success) {
-        this.setState({
-          discountList: data.list
-        })
-      }
-    })
-  }
 
   render() {
-    const { discountList } = this.state
+    const { data } = this.props
     return (
       <div className="discount">
         <a className="discount__header" href="/">
@@ -35,7 +14,7 @@ class Discount extends Component {
         </a>
         <div className="discount__content">
           {
-            discountList.map((item) => (
+            data.map((item) => (
               <Link
                 key={item.id}
                 to={`/detail/${item.id}`}
