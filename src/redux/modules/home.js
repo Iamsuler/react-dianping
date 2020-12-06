@@ -139,3 +139,4 @@ export const getLikes = state => {
 }
 
 export const getLikesPageCount = state => state.home.likes.pageCount
+export const getLikesIsFetching = state => state.home.likes.isFetching

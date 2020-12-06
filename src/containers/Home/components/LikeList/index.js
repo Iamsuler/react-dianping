@@ -21,7 +21,7 @@ class LikeList extends Component {
     // 滚动高度
     const scrollHeight = document.documentElement.scrollTop
     // 可视高度 + 滚动高度 >= LikeList组件实际高度时就加载
-    if (scrollHeight + visibleHeight >= actualHeight) {
+    if (scrollHeight + visibleHeight >= actualHeight && !this.props.isFetchingLikes) {
       this.props.fetchLikes()
     }
   }

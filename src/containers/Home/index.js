@@ -9,7 +9,7 @@ import LikeList from './components/LikeList'
 import Banner from './components/Banner'
 import Activity from './components/Activity'
 
-import { actions as homeActions, getDiscounts, getLikes, getLikesPageCount } from '../../redux/modules/home'
+import { actions as homeActions, getDiscounts, getLikes, getLikesPageCount, getLikesIsFetching } from '../../redux/modules/home'
 
 class Home extends Component {
   fetchLikes = () => {
@@ -21,7 +21,7 @@ class Home extends Component {
   }
 
   render() {
-    const { discounts, likes, pageCount } = this.props
+    const { discounts, likes, pageCount, isFetchingLikes } = this.props
     return (
       <div>
         <Header />
@@ -33,6 +33,7 @@ class Home extends Component {
         <LikeList
           data={ likes }
           pageCount={ pageCount }
+          isFetchingLikes={ isFetchingLikes }
           fetchLikes={ this.fetchLikes }
         />
       </div>
@@ -43,7 +44,8 @@ class Home extends Component {
 const mapStateToProps = (state) => ({
   likes: getLikes(state),
   discounts: getDiscounts(state),
-  pageCount: getLikesPageCount(state)
+  pageCount: getLikesPageCount(state),
+  isFetchingLikes: getLikesIsFetching(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
