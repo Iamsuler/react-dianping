@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Home from '../Home'
-import Footer from '@/components/Footer'
 import User from '../User'
 import ProductDetail from '../ProductDetail'
 class App extends Component {
@@ -24,7 +23,6 @@ class App extends Component {
             <Route path="/" component={ Home }></Route>
           </Switch>
         </BrowserRouter>
-        <Footer />
       </div>
     );
   }

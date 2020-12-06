@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import Footer from '@/components/Footer'
 import Header from './components/Header'
 import Category from './components/Category'
 import Headline from './components/Headline'
@@ -36,6 +37,7 @@ class Home extends Component {
           isFetchingLikes={ isFetchingLikes }
           fetchLikes={ this.fetchLikes }
         />
+        <Footer />
       </div>
     );
   }
