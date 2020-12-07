@@ -4,11 +4,11 @@ import './style.css'
 
 class SearchHistory extends Component {
   handleClear = () => {
-    console.log('handleClear')
+    this.props.clearHistoryKeywords()
   }
 
   render() {
-    const { data } = this.props
+    const { data, handleClickItem } = this.props
     return (
       <div className="searchHistory">
         <div className="searchHistory__header">搜索记录</div>
@@ -18,7 +18,7 @@ class SearchHistory extends Component {
               return (
                 <li
                   key={item.id}
-                  onClick={this.handleClick}
+                  onClick={ handleClickItem(item) }
                   className="searchHistory__item"
                 >
                   {item.keyword}

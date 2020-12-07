@@ -3,37 +3,17 @@ import React, { Component } from 'react'
 import './style.css'
 
 class SearchBox extends Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      inputText: ''
-    }
-  }
-
-  handleClick = (id) => {
-    console.log(id)
-  }
-
   handleChange = e => {
-    this.setState({
-      inputText: e.target.value
-    })
-  }
-
-  handleClear = () => {
-    this.setState({
-      inputText: ''
-    })
+    this.props.setInputText(e.target.value)
   }
 
   renderSuggestList = () => {
-    const { relatedKeywords } = this.props
+    const { relatedKeywords, handleClickItem } = this.props
     return (
       <ul className="searchBox__list">
         {relatedKeywords.map(item => {
           return (
-            <li className="searchBox__item" key={item.id} onClick={this.handleClick(item.id)}>
+            <li className="searchBox__item" key={item.id} onClick={ handleClickItem(item) }>
               <span className="searchBox__itemKeyworkd">
                 {item.keyword}
               </span>
@@ -48,7 +28,7 @@ class SearchBox extends Component {
   }
 
   render() {
-    const { inputText } = this.state
+    const { inputText, clearInputText, onCancel } = this.props
     const visiable = inputText.length > 0
     return (
       <div className="searchBox">
@@ -61,10 +41,10 @@ class SearchBox extends Component {
           {visiable ? (
             <span
               className="searchBox__clear"
-              onClick={this.handleClear}
+              onClick={ clearInputText }
             />
           ) : null}
-          <span className="searchBox__cancel" onClick={this.props.onCancel}>取消</span>
+          <span className="searchBox__cancel" onClick={ onCancel }>取消</span>
         </div>
         {visiable ? this.renderSuggestList() : null}
       </div>

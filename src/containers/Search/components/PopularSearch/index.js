@@ -3,12 +3,9 @@ import React, { Component } from 'react'
 import './style.css'
 
 class PopularSearch extends Component {
-  handleClickKeywords = id => {
-    console.log(id)
-  }
 
   render() {
-    const { data } = this.props
+    const { data, handleClickItem } = this.props
     return (
       <div className="popularSearch">
         {
@@ -17,7 +14,7 @@ class PopularSearch extends Component {
               <span
                 key={item.id}
                 className="popularSearch__item"
-                onClick={this.handleClickKeywords(item.id)}
+                onClick={handleClickItem(item)}
               >
                 {item.keyword}
               </span>
