@@ -30,7 +30,9 @@ function fetchData (url, schema) {
   return get(url).then(response => {
     const { data, success } = response
     if (success) {
-      return normalizeData(data.list, schema)
+      const { list } = data
+      const result = list && Array.isArray(list) ? list : data
+      return normalizeData(result, schema)
     } else {
       return response
     }
