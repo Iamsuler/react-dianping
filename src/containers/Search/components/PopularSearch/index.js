@@ -14,7 +14,7 @@ class PopularSearch extends Component {
               <span
                 key={item.id}
                 className="popularSearch__item"
-                onClick={handleClickItem(item)}
+                onClick={ () => handleClickItem(item)}
               >
                 {item.keyword}
               </span>

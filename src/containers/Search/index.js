@@ -16,7 +16,7 @@ class Search extends Component {
   handleClickItem = (item) => {
     const { id, keyword } = item
     this.props.searchActions.addHistoryKeyword(id)
-    this.props.searchActions.setInputText(keyword)
+    this.handleSetInputText(keyword)
   }
 
   handleClearHistory = () => {
@@ -29,6 +29,7 @@ class Search extends Component {
 
   handleSetInputText = (text) => {
     this.props.searchActions.setInputText(text)
+    this.props.searchActions.fetcheRelatedKeywords(text)
   }
 
   componentDidMount () {

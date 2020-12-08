@@ -13,7 +13,7 @@ class SearchBox extends Component {
       <ul className="searchBox__list">
         {relatedKeywords.map(item => {
           return (
-            <li className="searchBox__item" key={item.id} onClick={ handleClickItem(item) }>
+            <li className="searchBox__item" key={item.id} onClick={ () => handleClickItem(item) }>
               <span className="searchBox__itemKeyworkd">
                 {item.keyword}
               </span>

@@ -18,7 +18,7 @@ class SearchHistory extends Component {
               return (
                 <li
                   key={item.id}
-                  onClick={ handleClickItem(item) }
+                  onClick={ () => handleClickItem(item) }
                   className="searchHistory__item"
                 >
                   {item.keyword}
