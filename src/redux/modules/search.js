@@ -133,18 +133,18 @@ const popularKeywords = (state = initState.popularKeywords, action) => {
 
 const relatedKeywordsByText = (state = { isFetching: false, ids: [] }, action) => {
   switch (action.type) {
-    case types.FETCH_POPULAR_KEYWORDS_REQUEST:
+    case types.FETCH_RELATED_KEYWORDS_REQUEST:
       return {
         ...state,
         isFetching: true
       }
-    case types.FETCH_POPULAR_KEYWORDS_SUCCESS:
+    case types.FETCH_RELATED_KEYWORDS_SUCCESS:
       return {
         ...state,
         isFetching: false,
         ids: state.ids.concat(action.response.ids)
       }
-    case types.FETCH_POPULAR_KEYWORDS_FAILED:
+    case types.FETCH_RELATED_KEYWORDS_FAILED:
       return {
         ...state,
         isFetching: false
