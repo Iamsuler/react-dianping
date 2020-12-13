@@ -1,6 +1,7 @@
+const status = sessionStorage.getItem('status')
 const initState = {
   isFetching: false,
-  status:  sessionStorage.getItem('status') || false,
+  status: status === 'true',
 }
 
 const types = {

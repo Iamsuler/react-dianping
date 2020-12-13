@@ -11,6 +11,7 @@ import ProductDetail from '../ProductDetail'
 import Search from '../Search'
 import SearchResult from '../SearchResult'
 import Login from '../Login'
+import PrivateRoute from '../PrivateRoute'
 class App extends Component {
   render() {
     const { error, appActions: { clearError } } = this.props
@@ -22,7 +23,7 @@ class App extends Component {
         <BrowserRouter>
           <Switch>
             <Route path="/detail/:id" component={ ProductDetail }></Route>
-            <Route path="/user" component={ User }></Route>
+            <PrivateRoute path="/user" component={ User } ></PrivateRoute>
             <Route path="/search" component={ Search }></Route>
             <Route path="/search-result" component={ SearchResult }></Route>
             <Route path="/login" component={ Login }></Route>

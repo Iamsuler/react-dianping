@@ -13,7 +13,7 @@ class Login extends Component {
     super(props)
 
     this.state = {
-      username: sessionStorage.getItem('usernmae') || '',
+      username: sessionStorage.getItem('username') || '',
       password: ''
     }
   }
@@ -30,13 +30,15 @@ class Login extends Component {
       alert('用户名或密码不能为空')
       return
     }
+    sessionStorage.setItem('username', username)
     this.props.loginActions.login()
   }
 
   render() {
-    const { isLogin } = this.props
+    const { isLogin, location: { state } } = this.props
     if (isLogin) {
-      return <Redirect to="/user" />
+      const path = state && state.from ? state.from : '/user'
+      return <Redirect to={ path } />
     }
     const { username, password } = this.state
     return (
