@@ -10,13 +10,13 @@ import SearchHistory from './components/SearchHistory'
 class Search extends Component {
   onCancel = () => {
     this.props.searchActions.clearInputText()
-    this.props.history.goBack()
+    this.props.history.push('/')
   }
 
   handleClickItem = (item) => {
     const { id, keyword } = item
     this.props.searchActions.addHistoryKeyword(id)
-    this.handleSetInputText(keyword)
+    this.props.history.push({ pathname: '/search-result', search: `keyword=${keyword}` })
   }
 
   handleClearHistory = () => {
@@ -51,6 +51,7 @@ class Search extends Component {
           onCancel={ this.onCancel }
           setInputText={ this.handleSetInputText }
           clearInputText={ this.handleClearInputText }
+          handleClickItem={ this.handleClickItem }
         />
         <PopularSearch
           data={ popularKeywords }

@@ -2,7 +2,8 @@ import { combineReducers } from 'redux'
 
 import * as URL from '../../utils/url'
 import { FETCH_DATA } from '@/redux/middlewares/api'
-import { schema, getKeywordById } from './entities/keywords'
+import { schema as keywordSchema, getKeywordById } from './entities/keywords'
+import { schema as shopSchema, getShopById } from './entities/shops'
 
 const initState = {
   inputText: '',
@@ -10,8 +11,28 @@ const initState = {
     isFetching: false,
     ids: []
   },
+  /**
+   * relatedKeywords结构
+   * {
+   *     'keywordid': {
+   *          isFetching,
+   *          ids
+   *      }
+   * }
+   */
   relatedKeywords: {},
-  historyKeywords: []
+  historyKeywords: [],
+  /**
+   * searchResult结构
+   * {
+   *    isFetching,
+   *    ids
+   * }
+   */
+  relatedShops: {
+    isFetching: false,
+    ids: []
+  },
 }
 
 const types = {
@@ -28,7 +49,11 @@ const types = {
   CLEAR_INPUT_TEXT: 'SEARCH/CLEAR_INPUT_TEXT',
   // 历史记录
   ADD_HISTORY_KEYWORD: 'SEARCH/ADD_HISTORY_KEYWORD',
-  CLEAR_HISTORY_KEYWORDS: 'SEARCH/CLEAR_HISTORY_KEYWORDS'
+  CLEAR_HISTORY_KEYWORDS: 'SEARCH/CLEAR_HISTORY_KEYWORDS',
+  // 搜索结果shop
+  FETCH_RELATED_SHOPS_REQUEST: 'SEARCH/FETCH_RELATED_SHOPS_REQUEST',
+  FETCH_RELATED_SHOPS_SUCCESS: 'SEARCH/FETCH_RELATED_SHOPS_SUCCESS',
+  FETCH_RELATED_SHOPS_FAILED: 'SEARCH/FETCH_RELATED_SHOPS_FAILED'
 }
 
 const fetchePopularKeywordsTypes = endpoint => ({
@@ -38,7 +63,7 @@ const fetchePopularKeywordsTypes = endpoint => ({
       types.FETCH_POPULAR_KEYWORDS_SUCCESS,
       types.FETCH_POPULAR_KEYWORDS_FAILED
     ],
-    schema,
+    schema: keywordSchema,
     endpoint
   }
 })
@@ -50,7 +75,7 @@ const fetcheRelatedKeywordsTypes = (endpoint, text ) => ({
       types.FETCH_RELATED_KEYWORDS_SUCCESS,
       types.FETCH_RELATED_KEYWORDS_FAILED
     ],
-    schema,
+    schema: keywordSchema,
     endpoint
   },
   text
@@ -58,6 +83,19 @@ const fetcheRelatedKeywordsTypes = (endpoint, text ) => ({
 
 const clearHistoryKeywordType = () => ({
   type: types.CLEAR_HISTORY_KEYWORDS
+})
+
+const fetchRelatedShopsType = (endpoint, keyword) => ({
+  [FETCH_DATA]: {
+    endpoint,
+    schema: shopSchema,
+    types: [
+      types.FETCH_RELATED_SHOPS_REQUEST,
+      types.FETCH_RELATED_SHOPS_SUCCESS,
+      types.FETCH_RELATED_SHOPS_FAILED
+    ]
+  },
+  text: keyword
 })
 
 export const actions = {
@@ -103,6 +141,12 @@ export const actions = {
       }
 
       return dispatch(clearHistoryKeywordType())
+    }
+  },
+  fetchRelatedShops: (keyword) => {
+    return (dispatch) => {
+      const endpoint = URL.getRelatedShops(keyword)
+      dispatch(fetchRelatedShopsType(endpoint, keyword))
     }
   }
 }
@@ -192,11 +236,29 @@ const historyKeywords = (state = initState.historyKeywords, action) => {
   }
 }
 
+const relatedShops = (state = initState.relatedShops, action) => {
+  switch (action.type) {
+    case types.FETCH_RELATED_SHOPS_REQUEST:
+      return { ...state, isFetching: true }
+    case types.FETCH_RELATED_SHOPS_SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        ids: [...action.response.ids]
+      }
+    case types.FETCH_RELATED_SHOPS_FAILED:
+      return { ...state, isFetching: false }
+    default:
+      return state
+  }
+}
+
 const reduer = combineReducers({
   popularKeywords,
   relatedKeywords,
   inputText,
-  historyKeywords
+  historyKeywords,
+  relatedShops
 })
 
 export default reduer
@@ -226,3 +288,4 @@ export const getHistoryKeywords = state => {
 
   return historyKeywords.map(id => getKeywordById(state, id))
 }
+export const getRelatedShops = (state) => (state.search.relatedShops.ids.map(id => getShopById(state, id)))
