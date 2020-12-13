@@ -9,6 +9,7 @@ import Home from '../Home'
 import User from '../User'
 import ProductDetail from '../ProductDetail'
 import Search from '../Search'
+import SearchResult from '../SearchResult'
 class App extends Component {
   render() {
     const { error, appActions: { clearError } } = this.props
@@ -22,6 +23,7 @@ class App extends Component {
             <Route path="/detail/:id" component={ ProductDetail }></Route>
             <Route path="/user" component={ User }></Route>
             <Route path="/search" component={ Search }></Route>
+            <Route path="/search-result" component={ SearchResult }></Route>
             <Route path="/" component={ Home }></Route>
           </Switch>
         </BrowserRouter>
