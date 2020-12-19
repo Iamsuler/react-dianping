@@ -1,26 +1,40 @@
 import React, { Component } from 'react'
 import UserHeader from './components/UserHeader'
+import UserMain from './components/UserMain'
 import { actions as loginActions } from '../../redux/modules/login'
-import { actions as userActions, getOrders, getStatusText } from '../../redux/modules/user'
+import { actions as userActions, getOrders, getOrderType } from '../../redux/modules/user'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 class User extends Component {
-  handleBack = () => {}
+  handleBack = () => {
+    this.props.history.push('/')
+  }
   handleLogout = () => {
     this.props.loginActions.logout()
   }
+  handleSetOrderType = (type) => {
+    this.props.userActions.setOrderType(type)
+    this.props.userActions.fetchOrders(type)
+  }
 
   componentDidMount() {
-    this.props.userActions.fetchOrders()
+    const { orderType } = this.props
+    this.props.userActions.fetchOrders(orderType)
   }
 
   render() {
+    const { orders, orderType } = this.props
     return (
       <div>
         <UserHeader
           onBack={ this.handleBack }
           onLogout={ this.handleLogout }
+        />
+        <UserMain
+          data={ orders }
+          orderType={ orderType }
+          setOrderType={ this.handleSetOrderType }
         />
       </div>
     );
@@ -29,7 +43,7 @@ class User extends Component {
 
 const mapStateToProps = state => ({
   orders: getOrders(state),
-  statusText: getStatusText(state)
+  orderType: getOrderType(state)
 })
 const mapDispatchToProps = dispatch => ({
   loginActions: bindActionCreators(loginActions, dispatch),
