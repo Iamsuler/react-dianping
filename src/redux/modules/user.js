@@ -8,14 +8,14 @@ const initState = {
     isFetching: false,
     ids: []
   },
-  statusText: ''
+  orderType: 0
 }
 
 const types = {
   FETCH_ORDERS_REQUEST: 'ORDER/FETCH_ORDERS_REQUEST',
   FETCH_ORDERS_SUCCESS: 'ORDER/FETCH_ORDERS_SUCCESS',
   FETCH_ORDERS_FAILED: 'ORDER/FETCH_ORDERS_FAILED',
-  SET_STATUS_TEXT: 'ORDER/SET_STATUS_TEXT'
+  SET_ORDER_TYPE: 'ORDER/SET_ORDER_TYPE'
 }
 
 const fetchOrdersType = (endpoint, text) => ({
@@ -30,21 +30,21 @@ const fetchOrdersType = (endpoint, text) => ({
   },
   text
 })
-const setStatusTextType = text => ({
-  type: types.SET_STATUS_TEXT,
+const setOrderTypeType = text => ({
+  type: types.SET_ORDER_TYPE,
   text
 })
 
 export const actions = {
-  fetchOrders: text => {
+  fetchOrders: type => {
     return (dispatch) => {
-      const endpoint = URL.getOrders(text)
-      dispatch(fetchOrdersType(endpoint, text))
+      const endpoint = URL.getOrders(type)
+      dispatch(fetchOrdersType(endpoint, type))
     }
   },
-  setStatusText: text => {
+  setOrderType: type => {
     return (dispatch) => {
-      dispatch(setStatusTextType(text))
+      dispatch(setOrderTypeType(type))
     }
   }
 }
@@ -66,9 +66,9 @@ const orders = (state = initState.orders, action) => {
   }
 }
 
-const statusText = (state = initState.statusText, action) => {
+const orderType = (state = initState.orderType, action) => {
   switch (action.type) {
-    case types.SET_STATUS_TEXT:
+    case types.SET_ORDER_TYPE:
       return action.text
     default:
       return state
@@ -77,11 +77,11 @@ const statusText = (state = initState.statusText, action) => {
 
 const reducer = combineReducers({
   orders,
-  statusText
+  orderType
 })
 
 export default reducer
 
 // selector
 export const getOrders = state => state.user.orders.ids.map(id => getOrderById(state, id))
-export const getStatusText = state => state.user.orders.statusText
+export const getOrderType = state => state.user.orderType
