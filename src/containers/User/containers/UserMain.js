@@ -7,7 +7,10 @@ import {
   actions as userActions,
   isDeletingOrder,
   getOrderType,
-  getOrders
+  getOrders,
+  getComment,
+  getStars,
+  getCommentingOrderId
 } from '../../../redux/modules/user'
 
 import './UserMain.css'
@@ -28,13 +31,56 @@ const orderTypeMap = [
   }
 ]
 class UserMain extends Component {
+  onCancleRemoveOrder = () => {
+    this.props.userActions.hideDeleteDialog()
+  }
+  onConfirmRemoveOrder = () => {
+    this.props.userActions.fetchDeleteOrder()
+  }
+  handleClickTab = (type) => {
+    this.props.userActions.setOrderType(type)
+    this.props.userActions.fetchOrders(type)
+  }
+  handleRemoveOrder = id => {
+    this.props.userActions.showDeleteDialog(id)
+  }
+  componentDidMount () {
+    const { orderType } = this.props
+    this.props.userActions.fetchOrders(orderType)
+  }
+  handleComment = id => {
+    this.props.userActions.showCommentArea(id)
+  }
+  handleSubmitComment = () => {
+    this.props.userActions.postComment()
+  }
+  handleCancleComment = () => {
+    this.props.userActions.hideCommentArea()
+  }
+  handleCommentChange = comment => {
+    this.props.userActions.setCommentContent(comment)
+  }
+  handleStarsChange = stars => {
+    this.props.userActions.setStars(stars)
+  }
   renderOrderList = (data) => {
+    const { commentingOrderId, comment, stars } = this.props
     return data.map(item => {
+      const { id } = item
+      const isCommenting = id === commentingOrderId
       return (
         <OrderItem
-          key={item.id}
+          key={ id }
           data={item}
-          handleRemove={this.handleRemoveOrder}
+          isCommenting={ isCommenting }
+          comment={ isCommenting ? comment : '' }
+          stars={ isCommenting ? stars : 0 }
+          onRemove={ this.handleRemoveOrder.bind(this, id) }
+          onComment={ this.handleComment.bind(this, id) }
+          onCommentChange={ this.handleCommentChange }
+          onSubmitComment={ this.handleSubmitComment }
+          onCancelComment={ this.handleCancleComment }
+          onStarsChange={ this.handleStarsChange }
         />
       )
     })
@@ -56,23 +102,6 @@ class UserMain extends Component {
         onConfirm={ this.onConfirmRemoveOrder }
       />
     )
-  }
-  onCancleRemoveOrder = () => {
-    this.props.userActions.hideDeleteDialog()
-  }
-  onConfirmRemoveOrder = () => {
-    this.props.userActions.fetchDeleteOrder()
-  }
-  handleClickTab = (type) => {
-    this.props.userActions.setOrderType(type)
-    this.props.userActions.fetchOrders(type)
-  }
-  handleRemoveOrder = id => {
-    this.props.userActions.showDeleteDialog(id)
-  }
-  componentDidMount () {
-    const { orderType } = this.props
-    this.props.userActions.fetchOrders(orderType)
   }
   render() {
     const { orders, orderType, isDeletingOrder } = this.props
@@ -118,6 +147,9 @@ const mapStateToProps = state => ({
   isDeletingOrder: isDeletingOrder(state),
   orders: getOrders(state),
   orderType: getOrderType(state),
+  commentingOrderId: getCommentingOrderId(state),
+  stars: getStars(state),
+  comment: getComment(state)
 })
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActions, dispatch)

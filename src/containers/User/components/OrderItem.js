@@ -2,10 +2,56 @@ import React, { Component } from 'react'
 import './OrderItem.css'
 
 class OrderItem extends Component {
-  handleRemove = () => {
-    const { id } = this.props.data
-    this.props.handleRemove(id)
+  handleCommentChange = e => {
+    this.props.onCommentChange(e.target.value)
   }
+
+  renderStars = () => {
+    const { stars, onStarsChange } = this.props
+    return (
+      <div>
+        {
+          [1, 2, 3, 4, 5].map((item, index) => {
+            const lightClass = stars >= item ? 'orderItem__star--light' : ''
+            return (
+              <span
+                className={'orderItem__star ' + lightClass}
+                key={index}
+                onClick={onStarsChange.bind(this, item)}
+              >★</span>
+            )
+          })
+        }
+      </div>
+    )
+  }
+
+  renderCommentArea = () => {
+    const {
+      comment,
+      onCancelComment,
+      onSubmitComment
+    } = this.props
+    return (
+      <div className="orderItem__commentContainer">
+        <textarea
+          className="orderItem__comment"
+          onChange={this.handleCommentChange}
+          value={comment}
+        />
+        { this.renderStars() }
+        <button
+          className="orderItem__commentBtn"
+          onClick={onSubmitComment}
+        >提交</button>
+        <button
+          className="orderItem__commentBtn"
+          onClick={onCancelComment}
+        >取消</button>
+      </div>
+    )
+  }
+
   render() {
     const {
       title,
@@ -13,8 +59,10 @@ class OrderItem extends Component {
       orderPicUrl,
       channel,
       text,
-      type
+      type,
+      commentId
     } = this.props.data
+    const { onComment, onRemove, isCommenting } = this.props
     return (
       <div className="orderItem">
         <div className="orderItem__title">
@@ -37,18 +85,25 @@ class OrderItem extends Component {
         <div className="orderItem__bottom">
           <div className="orderItem__type">{channel}</div>
           <div>
-            {type === 1 ? (
-              <div
-                className="orderItem__btn"
-                // onClick={onComment}
-              >评价</div>
-            ) : null}
+            {
+              type === 1 && !commentId
+                ? (
+                    <div
+                      className="orderItem__btn"
+                      onClick={onComment}
+                    >评价</div>
+                  )
+                : null
+            }
             <div
               className="orderItem__btn"
-              onClick={ this.handleRemove }
+              onClick={ onRemove }
             >删除</div>
           </div>
         </div>
+        {
+          isCommenting ? this.renderCommentArea() : null
+        }
       </div>
     );
   }
