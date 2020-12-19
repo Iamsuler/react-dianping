@@ -3,6 +3,10 @@ import React, { Component } from 'react'
 import './style.css'
 
 class Confirm extends Component {
+  static defaultProps = {
+    cancelText: '取消',
+    confirmText: '确认'
+  }
   render() {
     const {
       content,
@@ -28,5 +32,4 @@ class Confirm extends Component {
     )
   }
 }
-
 export default Confirm
