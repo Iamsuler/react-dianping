@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
-import OrderItem from './OrderItem'
+import OrderItem from '../components/OrderItem'
 import Confirm from '../../../components/Confirm'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { actions as userActions, isDeletingOrder } from '../../../redux/modules/user'
+import {
+  actions as userActions,
+  isDeletingOrder,
+  getOrderType,
+  getOrders
+} from '../../../redux/modules/user'
 
 import './UserMain.css'
 
@@ -59,13 +64,18 @@ class UserMain extends Component {
     this.props.userActions.fetchDeleteOrder()
   }
   handleClickTab = (type) => {
-    this.props.setOrderType(type)
+    this.props.userActions.setOrderType(type)
+    this.props.userActions.fetchOrders(type)
   }
   handleRemoveOrder = id => {
     this.props.userActions.showDeleteDialog(id)
   }
+  componentDidMount () {
+    const { orderType } = this.props
+    this.props.userActions.fetchOrders(orderType)
+  }
   render() {
-    const { data, setOrderType, orderType, isDeletingOrder } = this.props
+    const { orders, orderType, isDeletingOrder } = this.props
     return (
       <div className="userMain">
         <div className="userMain__menu">
@@ -75,7 +85,7 @@ class UserMain extends Component {
                 <div
                   key={index}
                   className="userMain__tab"
-                  onClick={() => setOrderType(item.type)}
+                  onClick={() => this.handleClickTab(item.type)}
                 >
                   <span
                     className={
@@ -90,9 +100,11 @@ class UserMain extends Component {
           }
         </div>
         <div className="userMain__content">
-          {data && data.length > 0
-            ? this.renderOrderList(data)
-            : this.renderEmpty()}
+          {
+            orders && orders.length > 0
+              ? this.renderOrderList(orders)
+              : this.renderEmpty()
+          }
         </div>
         {
           isDeletingOrder ? this.renderConfirm() : null
@@ -103,7 +115,9 @@ class UserMain extends Component {
 }
 
 const mapStateToProps = state => ({
-  isDeletingOrder: isDeletingOrder(state)
+  isDeletingOrder: isDeletingOrder(state),
+  orders: getOrders(state),
+  orderType: getOrderType(state),
 })
 const mapDispatchToProps = dispatch => ({
   userActions: bindActionCreators(userActions, dispatch)
