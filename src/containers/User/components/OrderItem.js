@@ -78,8 +78,11 @@ class OrderItem extends Component {
             />
           </div>
           <div className="orderItem__content">
-            <div className="orderItem__line">{text ? text[0] : ''}</div>
-            <div className="orderItem__line">{text ? text[0] : ''}</div>
+            {
+              text.map((item, index) => (
+                <div key={index} className="orderItem__line">{ item }</div>
+              ))
+            }
           </div>
         </div>
         <div className="orderItem__bottom">
