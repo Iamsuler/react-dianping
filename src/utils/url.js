@@ -5,3 +5,4 @@ export const getShop = id => `/mock/shops/${id}.json`
 export const getPopularKeywords = () => `/mock/keywords/popular.json`
 export const getRelatedKeywords = text => `/mock/keywords/related.json?keyword=${text}`
 export const getRelatedShops = text => `/mock/shops/related.json?keyword=${text}`
+export const getOrders = text => `/mock/orders/orders.json?statusText=${text}`
