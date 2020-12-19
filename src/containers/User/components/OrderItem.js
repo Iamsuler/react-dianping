@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import './OrderItem.css'
 
 class OrderItem extends Component {
+  handleRemove = () => {
+    const { id } = this.props.data
+    this.props.handleRemove(id)
+  }
   render() {
     const {
       title,
@@ -41,7 +45,7 @@ class OrderItem extends Component {
             ) : null}
             <div
               className="orderItem__btn"
-              // onClick={this.handleRemove}
+              onClick={ this.handleRemove }
             >删除</div>
           </div>
         </div>

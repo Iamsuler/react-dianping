@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
 import OrderItem from './OrderItem'
+import Confirm from '../../../components/Confirm'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { actions as userActions, isDeletingOrder } from '../../../redux/modules/user'
 
 import './UserMain.css'
 
@@ -25,6 +29,7 @@ class UserMain extends Component {
         <OrderItem
           key={item.id}
           data={item}
+          handleRemove={this.handleRemoveOrder}
         />
       )
     })
@@ -38,11 +43,29 @@ class UserMain extends Component {
       </div>
     )
   }
+  renderConfirm = () => {
+    return (
+      <Confirm
+        content="请确认是否删除该商品"
+        onCancel={ this.onCancleRemoveOrder }
+        onConfirm={ this.onConfirmRemoveOrder }
+      />
+    )
+  }
+  onCancleRemoveOrder = () => {
+    this.props.userActions.hideDeleteDialog()
+  }
+  onConfirmRemoveOrder = () => {
+    this.props.userActions.fetchDeleteOrder()
+  }
   handleClickTab = (type) => {
     this.props.setOrderType(type)
   }
+  handleRemoveOrder = id => {
+    this.props.userActions.showDeleteDialog(id)
+  }
   render() {
-    const { data, setOrderType, orderType } = this.props
+    const { data, setOrderType, orderType, isDeletingOrder } = this.props
     return (
       <div className="userMain">
         <div className="userMain__menu">
@@ -71,9 +94,23 @@ class UserMain extends Component {
             ? this.renderOrderList(data)
             : this.renderEmpty()}
         </div>
+        {
+          isDeletingOrder ? this.renderConfirm() : null
+        }
       </div>
     );
   }
 }
 
-export default UserMain
+const mapStateToProps = state => ({
+  isDeletingOrder: isDeletingOrder(state)
+})
+const mapDispatchToProps = dispatch => ({
+  userActions: bindActionCreators(userActions, dispatch)
+})
+const UserMainContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserMain)
+
+export default UserMainContainer
