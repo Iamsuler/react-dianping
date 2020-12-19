@@ -7,6 +7,7 @@ import * as URL from '../../utils/url'
 const initState = {
   orders: {
     isFetching: false,
+    loaded: false, // 标记是否从接口获取订单
     ids: []
   },
   orderType: 0,
@@ -43,7 +44,9 @@ const types = {
   // 提交评价
   POST_COMMENT_REQUEST: 'USER/POST_COMMENT_REQUEST',
   POST_COMMENT_SUCCESS: 'USER/POST_COMMENT_SUCCESS',
-  POST_COMMENT_FAILED: 'USER/POST_COMMENT_FAILED'
+  POST_COMMENT_FAILED: 'USER/POST_COMMENT_FAILED',
+  // 购买添加订单
+  ADD_ORDER: 'USER/ADD_ORDER'
 }
 
 const fetchOrdersType = (endpoint, text) => ({
@@ -70,7 +73,11 @@ const postCommentSuccessType = () => ({ type: types.POST_COMMENT_SUCCESS })
 
 export const actions = {
   fetchOrders: type => {
-    return (dispatch) => {
+    return (dispatch, getState) => {
+      const { loaded } = getState().user.orders
+      if (loaded) {
+        return null
+      }
       const endpoint = URL.getOrders(type)
       dispatch(fetchOrdersType(endpoint, type))
     }
@@ -137,7 +144,8 @@ export const actions = {
         }, 1000)
       })
     }
-  }
+  },
+  addOrder: orderId => ({ type: types.ADD_ORDER, orderId })
 }
 
 const orders = (state = initState.orders, action) => {
@@ -148,6 +156,7 @@ const orders = (state = initState.orders, action) => {
       return {
         ...state,
         isFetching: false,
+        loaded: true,
         ids: action.response.ids
       }
     case types.FETCH_ORDERS_FAILED:
@@ -157,6 +166,14 @@ const orders = (state = initState.orders, action) => {
       return {
         ...state,
         ids
+      }
+    case types.ADD_ORDER:
+      return {
+        ...state,
+        ids: [
+          action.orderId,
+          ...state.ids
+        ]
       }
     default:
       return state

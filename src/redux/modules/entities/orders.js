@@ -12,7 +12,8 @@ export const actions = {
     type: types.DELETE_ORDER,
     orderId
   }),
-  addComment: (orderId, commentId) => ({ type: types.ADD_COMMENT, orderId, commentId })
+  addComment: (orderId, commentId) => ({ type: types.ADD_COMMENT, orderId, commentId }),
+  addOrder: order => ({ type: types.ADD_ORDER, order })
 }
 const reducer = (state = {}, action) => {
   const { type } = action
@@ -29,6 +30,9 @@ const reducer = (state = {}, action) => {
         commentId: action.commentId
       }
     }
+  } else if (type === types.ADD_ORDER) {
+    const { order } = action
+    return { ...state, [order.id]: order }
   } else if (action.response && action.response.orders) {
     // 外部影响，实体组件如果存在响应，也应该进行更新
     return { ...state, ...action.response.orders }
