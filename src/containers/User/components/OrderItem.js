@@ -42,9 +42,7 @@ class OrderItem extends Component {
             <div
               className="orderItem__btn"
               // onClick={this.handleRemove}
-            >
-              删除
-                        </div>
+            >删除</div>
           </div>
         </div>
       </div>
