@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
 import { FETCH_DATA } from '../middlewares/api'
-import { schema as orderSchema, getOrderById } from './entities/orders'
+import { schema as orderSchema, actions as orderActions, getOrderById } from './entities/orders'
+import { schema as commentSchema, actions as commentActions } from './entities/comments'
 import * as URL from '../../utils/url'
-import { actions as orderActions } from './entities/orders'
 
 const initState = {
   orders: {
@@ -22,15 +22,28 @@ const initState = {
 }
 
 const types = {
+  // 获取订单列表
   FETCH_ORDERS_REQUEST: 'USER/FETCH_ORDERS_REQUEST',
   FETCH_ORDERS_SUCCESS: 'USER/FETCH_ORDERS_SUCCESS',
   FETCH_ORDERS_FAILED: 'USER/FETCH_ORDERS_FAILED',
+  // 设置当前选择的Tab
   SET_ORDER_TYPE: 'USER/SET_ORDER_TYPE',
+  // 删除确认对话框
   SHOW_DELETE_ORDER: 'USER/SHOW_DELETE_ORDER',
   HIDE_DELETE_ORDER: 'USER/HIDE_DELETE_ORDER',
+  // 删除订单
   FETCH_DELETE_ORDER_REQUEST: 'USER/FETCH_DELETE_ORDER_REQUEST',
   FETCH_DELETE_ORDER_SUCCESS: 'USER/FETCH_DELETE_ORDER_SUCCESS',
   FETCH_DELETE_ORDER_FAILED: 'USER/FETCH_DELETE_ORDER_FAILED',
+  // 评价订单编辑
+  SHOW_COOMENT_AREA: 'USER/SHOW_COOMENT_AREA',
+  HIDE_COMMENT_AREA: 'USER/HIDE_COMMENT_AREA',
+  SET_COMMENT_CONTENT: 'USER/SET_COMMENT_CONTENT',
+  SET_STARS: 'USER/SET_STARS',
+  // 提交评价
+  POST_COMMENT_REQUEST: 'USER/POST_COMMENT_REQUEST',
+  POST_COMMENT_SUCCESS: 'USER/POST_COMMENT_SUCCESS',
+  POST_COMMENT_FAILED: 'USER/POST_COMMENT_FAILED'
 }
 
 const fetchOrdersType = (endpoint, text) => ({
@@ -52,6 +65,8 @@ const setOrderTypeType = text => ({
   type: types.SET_ORDER_TYPE,
   text
 })
+const postCommentRequestType = () => ({ type: types.POST_COMMENT_REQUEST })
+const postCommentSuccessType = () => ({ type: types.POST_COMMENT_SUCCESS })
 
 export const actions = {
   fetchOrders: type => {
@@ -87,7 +102,42 @@ export const actions = {
   }),
   hideDeleteDialog: () => ({
     type: types.HIDE_DELETE_ORDER
-  })
+  }),
+  showCommentArea: orderId => ({
+    type: types.SHOW_COOMENT_AREA,
+    orderId
+  }),
+  hideCommentArea: () => ({
+    type: types.HIDE_COMMENT_AREA
+  }),
+  setCommentContent: comment => ({
+    type: types.SET_COMMENT_CONTENT,
+    comment
+  }),
+  setStars: stars => ({
+    type: types.SET_STARS,
+    stars
+  }),
+  postComment: () => {
+    return (dispatch, getState) => {
+      dispatch(postCommentRequestType())
+      const { id: orderId, comment, stars } = getState().user.currentOrder
+      new Promise((resolve) => {
+        setTimeout(() => {
+          const commentId = new Date().getTime()
+          const commentObj = {
+            [commentSchema.id]: commentId,
+            content: comment,
+            stars
+          }
+          dispatch(commentActions.addComment(commentObj))
+          dispatch(orderActions.addComment(orderId, commentId))
+          dispatch(postCommentSuccessType())
+          resolve()
+        }, 1000)
+      })
+    }
+  }
 }
 
 const orders = (state = initState.orders, action) => {
@@ -130,10 +180,19 @@ const currentOrder = (state = initState.currentOrder, action) => {
         isDeleting: true,
         id: action.orderId
       }
+    case types.HIDE_COMMENT_AREA:
     case types.HIDE_DELETE_ORDER:
     case types.FETCH_DELETE_ORDER_SUCCESS:
     case types.FETCH_DELETE_ORDER_FAILED:
+    case types.POST_COMMENT_SUCCESS:
+    case types.POST_COMMENT_FAILED:
       return initState.currentOrder
+    case types.SHOW_COOMENT_AREA:
+      return { ...state, id: action.orderId, isCommenting: true }
+    case types.SET_COMMENT_CONTENT:
+      return { ...state, comment: action.comment }
+    case types.SET_STARS:
+      return { ...state, stars: action.stars }
     default:
       return state
   }
@@ -150,4 +209,13 @@ export default reducer
 // selector
 export const getOrders = state => state.user.orders.ids.map(id => getOrderById(state, id))
 export const getOrderType = state => state.user.orderType
-export const isDeletingOrder = state => state.user.currentOrder.isDeleting
+export const isDeletingOrder = state => {
+  return state.user.currentOrder && state.user.currentOrder.isDeleting
+}
+export const getComment = state => state.user.currentOrder.comment
+export const getCommentingOrderId = state => {
+  return state.user.currentOrder && state.user.currentOrder.isCommenting
+    ? state.user.currentOrder.id
+    : null
+}
+export const getStars = state => state.user.currentOrder.stars
